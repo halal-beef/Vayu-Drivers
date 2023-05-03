@@ -1,0 +1,348 @@
+﻿;-------------------------------------------------------------------------------
+; QCWLAN8150.INF
+;
+; Qualcomm Wireless LAN NDIS Miniport Adapter
+;
+;  Copyright (c) 2017-2019 Qualcomm Technologies, Inc.
+;  All Rights Reserved.
+;  Confidential and Proprietary - Qualcomm Technologies, Inc.
+
+
+[version]
+Signature   = "$Windows NT$"
+Class       = Net
+ClassGUID   = {4d36e972-e325-11ce-bfc1-08002be10318}
+Provider    = %Surface%
+DriverVer = 01/19/2023,1.0.1940.0000
+PnpLockDown = 1
+CatalogFile = POCOX3Pro_wlan.cat
+
+[ControlFlags]
+
+
+[Manufacturer]
+%Surface% = QUALCOMM,NTARM64
+
+; For WinXP and later
+[QUALCOMM.NTARM64]
+; DisplayName               Section                 DeviceID
+; -----------               -------                 --------
+%WLAN.DeviceDesc%    = QcWlan.ndi.NTARM64, QCMS\VEN_QCOM&DEV_052B
+%WLAN.DeviceDesc%    = QcWlan.ndi.NTARM64, QCMS\VEN_QCOM&DEV_052B&SUBSYS_MTP08150
+%WLAN.DeviceDesc%    = QcWlan.ndi.NTARM64, QCMS\VEN_QCOM&DEV_052B&SUBSYS_CLS08150
+%WLAN.DeviceDesc%    = QcWlan.NMODEM.ndi.NTARM64, QCMS\VEN_QCOM&DEV_052B&SUBSYS_HAN08150
+%WLAN.DeviceDesc%    = QcWlan.NMODEM.ndi.NTARM64, QCMS\VEN_QCOM&DEV_052B&SUBSYS_SCNM8150
+%WLAN.DeviceDesc%    = QcWlan.NMODEM.ndi.NTARM64, QCMS\VEN_QCOM&DEV_052B&SUBSYS_CDPA8150
+%WLAN.DeviceDesc%    = QcWlan.NMODEM.ndi.NTARM64, QCMS\VEN_QCOM&DEV_052B&SUBSYS_CLSA8150
+%WLAN.DeviceDesc%    = QcWlan.NMODEM.ndi.NTARM64, QCMS\VEN_QCOM&DEV_052B&SUBSYS_MTPA8150
+%WLAN.DeviceDesc%    = QcWlan.NMODEM.ndi.NTARM64, QCMS\VEN_QCOM&DEV_052B&SUBSYS_MTPB8150
+%WLAN.DeviceDesc%    = QcWlan.NMODEM.ndi.NTARM64, QCMS\VEN_QCOM&DEV_052B&SUBSYS_MTPD8150
+%WLAN.DeviceDesc%    = QcWlan.NMODEM.ndi.NTARM64, QCMS\VEN_QCOM&DEV_052B&SUBSYS_CLSB8150
+
+[QcWlan.ndi.NTARM64]
+Include            = netvwifibus.inf
+Needs              = VWiFiBus.CopyFiles
+*IfType            = 71		; IF_TYPE_IEEE80211
+*MediaType         = 16		; NdisMediumNative802_11
+*PhysicalMediaType = 9		; NdisPhysicalMediumNative802_11
+Characteristics    = 0x84    ; NCF_PHYSICAL | NCF_HAS_UI
+BusType            = 15        ; PnP Bus
+AddReg             = QcWlan.Reg, QcWlan11n.reg, D0PC.reg, wowenable.reg, TxBf.reg, MAS.reg, DriverMode.Reg, enableVht2G.reg, rsc.reg, lso.reg, fwVersion.Reg, caps.Reg, Autologger.reg
+CopyFiles          = QcWlan.CopyFiles, bdwlanFiles, WlanFWFiles
+AddProperty        = WDTFSOCDeviceCategory
+
+; WLAN Device category for SoCs (WLAN is of type NORMAL = 0)
+[WDTFSOCDeviceCategory]
+{5D078032-6378-437B-8DA5-9B32B7CA3FDD},2,7,,0
+
+[QcWlan.ndi.NTARM64.Services]
+Include         = netvwifibus.inf
+Needs           = VWiFiBus.Services
+AddService      = qcwlan, 2, QcWlan.Service, QcWlan.EventLog
+
+[QcWlan.ndi.NTARM64.HW]
+Include         = netvwifibus.inf
+Needs           = VWiFiBus.PnPFilterRegistration.HW
+
+[QcWlan.NMODEM.ndi.NTARM64]
+Include            = netvwifibus.inf
+Needs              = VWiFiBus.CopyFiles
+*IfType            = 71		; IF_TYPE_IEEE80211
+*MediaType         = 16		; NdisMediumNative802_11
+*PhysicalMediaType = 9		; NdisPhysicalMediumNative802_11
+Characteristics    = 0x84    ; NCF_PHYSICAL | NCF_HAS_UI
+BusType            = 15        ; PnP Bus
+AddReg             = QcWlan.Reg, QcWlan11n.reg, D0PC.reg, wowenable.reg, TxBf.reg, MAS.reg, DriverMode.Reg, enableVht2G.reg, rsc.reg, lso.reg, fwVersion.Reg, caps.Reg, Autologger.reg, modemconcern.reg
+CopyFiles          = QcWlan.CopyFiles, bdwlanFiles, WlanFWFiles
+AddProperty        = WDTFSOCDeviceCategory
+
+[QcWlan.NMODEM.ndi.NTARM64.Services]
+Include         = netvwifibus.inf
+Needs           = VWiFiBus.Services
+AddService      = qcwlan, 2, QcWlan.Service, QcWlan.EventLog
+
+[QcWlan.NMODEM.ndi.NTARM64.HW]
+Include         = netvwifibus.inf
+Needs           = VWiFiBus.PnPFilterRegistration.HW
+
+;--------------------------------------------------------------------------
+; INTERFACE SECTION
+;--------------------------------------------------------------------------
+[QcWlan.ndi.NTARM64.Interfaces]
+AddInterface=%wlanInterfaceGuid%,,QcWlan.I.addPath
+
+[QcWlan.NMODEM.ndi.NTARM64.Interfaces]
+AddInterface=%wlanInterfaceGuid%,,QcWlan.I.addPath
+
+[QcWlan.I.addPath]
+AddReg=QcWlan.addPath.AddReg
+
+[QcWlan.addPath.AddReg]
+HKR,,Local,,%13%\WLANMDSP.MBN
+
+;-----------------------------------------------------------------------------
+; Wireless Local Area Network Adaptor Common
+;-----------------------------------------------------------------------------
+[QcWlan.Reg]
+HKR, Ndi\Interfaces, UpperRange, 0, "ndis5"
+HKR, Ndi\Interfaces, LowerRange, 0, "wlan,ethernet,vwifi"
+HKR, Ndi\Interfaces, DefUpper,   0, "ndis5"
+HKR, Ndi\Interfaces, DefLower,   0, "ethernet"
+HKR, Ndi,            Service,    0, %QcWlan.Service.Name%
+
+;-----------------------------------------------------------------------------
+;Source
+;-----------------------------------------------------------------------------
+[SourceDisksNames]
+;
+; diskid = description[, [tagfile] [, <unused>, subdir]]
+;
+1 = %DiskId1%,,
+
+
+[SourceDisksFiles]
+
+wlanmdsp.mbn = 1,
+
+
+data.msc = 1,
+bdwlan.bin = 1,
+
+qcwlan8150.sys=1
+
+[SourceDisksFiles.ARM64]
+qcwlan8150.sys=1
+
+;-----------------------------------------------------------------------------
+; DestinationDirs
+;-----------------------------------------------------------------------------
+[DestinationDirs]
+QcWlan.CopyFiles = 13
+bdwlanFiles = 13
+WlanFWFiles = 13
+
+[QcWlan.CopyFiles]
+qcwlan8150.sys,,,2
+
+[WlanFWFiles]
+
+wlanmdsp.mbn
+
+
+[bdwlanFiles]
+
+data.msc
+bdwlan.bin
+
+
+
+
+;-----------------------------------------------------------------------------
+; Driver and Service Section
+;-----------------------------------------------------------------------------
+
+[QcWlan.Service]
+DisplayName     = %QcWlan.Service.DispName%
+ServiceType     = 1 ;%SERVICE_KERNEL_DRIVER%
+StartType       = 3 ;%SERVICE_DEMAND_START%
+ErrorControl    = 1 ;%SERVICE_ERROR_NORMAL%
+ServiceBinary   = %13%\qcwlan8150.sys
+LoadOrderGroup  = NDIS
+
+
+[QcWlan11n.reg]
+HKR, Ndi\params\*ReceiveBuffers,    ParamDesc,  0, "Receive Buffers"
+HKR, Ndi\params\*ReceiveBuffers,    default,    0, "256"
+HKR, Ndi\params\*ReceiveBuffers,    min,        0, "1"
+HKR, Ndi\params\*ReceiveBuffers,    max,        0, "00000512"
+HKR, Ndi\params\*ReceiveBuffers,    step,       0, "1"
+HKR, Ndi\params\*ReceiveBuffers,    Base,       0, "10"
+HKR, Ndi\params\*ReceiveBuffers,    type,       0, "int"
+HKR, Ndi\params\*TransmitBuffers,   ParamDesc,  0, "Transmit Buffers"
+HKR, Ndi\params\*TransmitBuffers,   default,    0, "896"
+HKR, Ndi\params\*TransmitBuffers,   min,        0, "1"
+HKR, Ndi\params\*TransmitBuffers,   max,        0, "00002400"
+HKR, Ndi\params\*TransmitBuffers,   step,       0, "1"
+HKR, Ndi\params\*TransmitBuffers,   Base,       0, "10"
+HKR, Ndi\params\*TransmitBuffers,   type,       0, "int"
+HKR, Ndi\Params\EnableACS,          ParamDesc,  0, "EnableACS"
+HKR, Ndi\Params\EnableACS,          Type,       0, "enum"
+HKR, Ndi\Params\EnableACS\enum,     "1",        0, "Enable"
+HKR, Ndi\Params\EnableACS\enum,     "0",        0, "Disable"
+HKR, Ndi\Params\EnableACS,          Default,    0, "0"
+HKR, Ndi\Params\PreferredSapBand,      ParamDesc,  0, "PreferredSapBand"
+HKR, Ndi\Params\PreferredSapBand,      Type,       0, "enum"
+HKR, Ndi\Params\PreferredSapBand\enum, "0",        0, "2.4GAp"
+HKR, Ndi\Params\PreferredSapBand\enum, "1",        0, "5GAp"
+HKR, Ndi\Params\PreferredSapBand,      Default,    0, "0"
+HKR, Ndi\Params\roamPolicy,         ParamDesc,  0, "RoamAggressive"
+HKR, Ndi\Params\roamPolicy,         Type,       0, "enum"
+HKR, Ndi\Params\roamPolicy\enum,    "5",        0, "RssiHighest"
+HKR, Ndi\Params\roamPolicy\enum,    "4",        0, "RssiMedium-high"
+HKR, Ndi\Params\roamPolicy\enum,    "3",        0, "RssiMedium"
+HKR, Ndi\Params\roamPolicy\enum,    "2",        0, "RssiMedium-low"
+HKR, Ndi\Params\roamPolicy\enum,    "1",        0, "RssiLowest"
+HKR, Ndi\Params\roamPolicy,         Default,    0, "3"
+HKR, Ndi\params\NetworkAddress,     ParamDesc,  0,  "Network Address"
+HKR, Ndi\params\NetworkAddress,     default,    0,  ""
+HKR, Ndi\params\NetworkAddress,     LimitText,  0,  "12"
+HKR, Ndi\params\NetworkAddress,     UpperCase,  0,  "1"
+HKR, Ndi\params\NetworkAddress,     optional,   0,  "1"
+HKR, Ndi\params\NetworkAddress,     type,       0,  "edit"
+HKR, Ndi\params\shortPreamble,      ParamDesc,  0,  "shortPreamble"
+HKR, Ndi\params\shortPreamble,      Base,       0,  "10"
+HKR, Ndi\params\shortPreamble,      default,    0,  "1"
+HKR, Ndi\params\shortPreamble,      type,       0,  "enum"
+HKR, Ndi\params\shortPreamble\enum, "1",        0,  "shortPreambleEnable"
+HKR, Ndi\params\shortPreamble\enum, "0",        0,  "shortPreambleDisable"
+HKR, Ndi\params\scanTimeValid,      ParamDesc,  0,  "scanTimeValid"
+HKR, Ndi\params\scanTimeValid,      default,    0,  "60"
+HKR, Ndi\params\scanTimeValid,      min,        0,  "20"
+HKR, Ndi\params\scanTimeValid,      max,        0,  "120"
+HKR, Ndi\params\scanTimeValid,      step,       0,  "5"
+HKR, Ndi\params\scanTimeValid,      base,       0,  "10"
+HKR, Ndi\params\scanTimeValid,      type,       0,  "int"
+
+
+[D0PC.reg]
+HKR, NDI\params\D0PCEnable,ParamDesc,,          "D0 PacketCoalescing"
+HKR, NDI\params\D0PCEnable,type,,               "enum"
+HKR, NDI\params\D0PCEnable,Default,,            "1"
+HKR, NDI\params\D0PCEnable\enum,0,,             "Disable"
+HKR, NDI\params\D0PCEnable\enum,1,,             "Enable"
+
+[wowenable.reg]
+HKR, ,                                  wowEnable,                      0x00010001,  "1"
+HKR, ,                                  gAOACSupported,                 0x00010001,  "1"
+
+[TxBf.reg]
+HKR, ,                                  TxBfeeEnable,                           0x00010001,  "1"
+
+[MAS.reg]
+; Enable Mcc adaptive schedular
+; ----------------------------------------------------------------------------
+HKR, ,                                  AdaptiveSchedulerEnable,        0x00010001,1
+
+; ----------------------------------------------------------------------------
+; Driver Mode (FTM mode)
+; ----------------------------------------------------------------------------
+[DriverMode.Reg]
+HKR, ,                                   DriverMode,                      0x00010001,0
+
+[enableVht2G.reg]
+HKR, ,                                   NetBand,                         0x00010001, 0xFFFE6F
+HKR, ,                                   wModeSelect,                     0x00010001, 0xFFFE6F
+
+[rsc.reg]
+HKR, NDI\params\*RscIPv4,ParamDesc,,          "Recv Segment Coalescing IPv4"
+HKR, NDI\params\*RscIPv4,type,,               "enum"
+HKR, NDI\params\*RscIPv4,Default,,            "1"
+HKR, NDI\params\*RscIPv4\enum,0,,             "Disable"
+HKR, NDI\params\*RscIPv4\enum,1,,             "Enable"
+
+HKR, NDI\params\*RscIPv6,ParamDesc,,          "Recv Segment Coalescing IPv6"
+HKR, NDI\params\*RscIPv6,type,,               "enum"
+HKR, NDI\params\*RscIPv6,Default,,            "1"
+HKR, NDI\params\*RscIPv6\enum,0,,             "Disable"
+HKR, NDI\params\*RscIPv6\enum,1,,             "Enable"
+
+[lso.reg]
+HKR, NDI\params\*LsoV2IPv4,ParamDesc,,          "Large Send Offload V2 (IPv4)"
+HKR, NDI\params\*LsoV2IPv4,type,,               "enum"
+HKR, NDI\params\*LsoV2IPv4,Default,,            "1"
+HKR, NDI\params\*LsoV2IPv4\enum,0,,             "Disable"
+HKR, NDI\params\*LsoV2IPv4\enum,1,,             "Enable"
+
+HKR, NDI\params\*LsoV2IPv6 ,ParamDesc,,         "Large Send Offload V2 (IPv6)"
+HKR, NDI\params\*LsoV2IPv6 ,type,,              "enum"
+HKR, NDI\params\*LsoV2IPv6 ,Default,,           "1"
+HKR, NDI\params\*LsoV2IPv6\enum,0,,             "Disable"
+HKR, NDI\params\*LsoV2IPv6\enum,1,,             "Enable"
+
+[QcWlan.EventLog]
+AddReg = QcWlan.AddEventLog.reg
+
+[QcWlan.AddEventLog.reg]
+HKR, , EventMessageFile, 0x00020000, "%%SystemRoot%%\System32\netevent.dll"
+HKR, , TypesSupported,   0x00010001, 7
+
+[fwVersion.reg]
+HKR, ,                                   fwVersion,                      0,  "%WlanFWVer%"
+
+;-----------------------------------------------------------------------------
+;  OEM-modifyable data
+;-----------------------------------------------------------------------------
+
+[caps.reg]
+HKR, , ignore11dBeacon, %REG_DWORD%, "0"
+HKR, , CountryName, %REG_SZ%, ""
+HKR, , linkQualityChangeThresh, %REG_DWORD%, "0xa"
+HKR, , gEnableModulatedDTIM, %REG_DWORD%, "0"
+HKR, , gMaxLIModulatedDTIM, %REG_DWORD%, "0xa"
+HKR, , WfdGoEnable11b, %REG_DWORD%, "1"
+HKR, , WfdEnable2GHT40, %REG_DWORD%, "0"
+HKR, , hsEnable, %REG_DWORD%, "0"
+HKR, , roamPrefer5GHz, %REG_DWORD%, "0"
+HKR, , WfdPreferredBand, %REG_DWORD%, "1"
+HKR, , WfdPreferred2GPhyMode, %REG_DWORD%, "3"
+HKR, , WfdPreferred5GPhyMode, %REG_DWORD%, "5"
+HKR, , WfdPreferred2GOpChan, %REG_DWORD%, "0xb"
+HKR, , WfdPreferred5GOpChan, %REG_DWORD%, "0x24"
+
+[Autologger.reg]
+HKLM, SYSTEM\CurrentControlSet\Control\WMI\Autologger\WifiDriverIHVSession,                                                    Start,                        %REG_DWORD%,  1
+HKLM, SYSTEM\CurrentControlSet\Control\WMI\Autologger\WifiDriverIHVSession\%IHVProviderGuid%,                                  Enabled,                      %REG_DWORD%,  1
+HKLM, SYSTEM\CurrentControlSet\Control\WMI\Autologger\WifiDriverIHVSession\%IHVProviderGuid%,                                  EnableLevel,                  %REG_DWORD%,  2
+HKLM, SYSTEM\CurrentControlSet\Control\WMI\Autologger\WifiDriverIHVSession\%IHVProviderGuid%,                                  MatchAnyKeyword,              %REG_QWORD%,  0xffffffffffffffff
+HKLM, SYSTEM\CurrentControlSet\Control\WMI\Autologger\WifiDriverIHVSession\%IHVProviderGuid%,                                  MatchAllKeyword,              %REG_QWORD%,  0x0
+HKLM, SYSTEM\CurrentControlSet\Control\WMI\Autologger\WifiDriverIHVSessionRepro\%IHVProviderGuid%,                             Enabled,                      %REG_DWORD%,  1
+HKLM, SYSTEM\CurrentControlSet\Control\WMI\Autologger\WifiDriverIHVSessionRepro\%IHVProviderGuid%,                             EnableLevel,                  %REG_DWORD%,  0xFF
+HKLM, SYSTEM\CurrentControlSet\Control\WMI\Autologger\WifiDriverIHVSessionRepro\%IHVProviderGuid%,                             MatchAnyKeyword,              %REG_QWORD%,  0xffffffffffffffff
+HKLM, SYSTEM\CurrentControlSet\Control\WMI\Autologger\WifiDriverIHVSessionRepro\%IHVProviderGuid%,                             MatchAllKeyword,              %REG_QWORD%,  0x0
+
+[modemconcern.reg]
+HKR, , QMINASClient, %REG_DWORD%, "0"
+HKR, , DWSServerEnable, %REG_DWORD%, "0"
+HKR, , ForceNmModem, %REG_DWORD%, "1"
+
+;-----------------------------------------------------------------------------
+; Localizable Strings
+;-----------------------------------------------------------------------------
+[Strings]
+Surface                     = "Xiaomi"
+WLAN.DeviceDesc             = "POCO X3 Pro Wi-Fi B/G/N/AC/AX (2x2) Svc"
+QcWlan.Service.DispName     = "POCO X3 Pro Wi-Fi B/G/N/AC/AX (2x2) Svc"
+QcWlan.Service.Name         = "qcwlan"
+DiskId1                     = "Qualcomm Wireless LAN Adapter Device Installation Disk #1"
+rssiThrHighNormal           = "Normal"
+rssiThrHighMin              = "Min"
+scanTime                    = "Roam Time (sec)"
+roamRssiA                   = "Roam Time Threshold (db)"
+WirelessMode                = "Wireless Mode Selection"
+adhocchannel                = "Adhoc channel Selection"
+WlanFWVer                   = "00417"
+wlanInterfaceGuid           = "{9B8EC8E5-7F1B-4970-A38D-51901FECE0A5}"
+IHVProviderGuid             = "{BB6F5B93-635C-47BE-816F-E895E77064A8}"
+REG_SZ                      = 0x00000000
+REG_DWORD                   = 0x00010001
+REG_QWORD                   = 0x000B0001
