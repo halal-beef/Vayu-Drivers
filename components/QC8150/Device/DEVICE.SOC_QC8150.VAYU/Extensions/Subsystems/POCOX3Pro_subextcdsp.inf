@@ -290,10 +290,10 @@ HKR,,FriendlyName,, %CDSP.FriendlyName%
 [Strings]
 ;Localizable Strings
 SURFACE = "Xiaomi"
-DiskId1 = "Poco X3 Pro Combined Subsystem Driver Installation Disk"
-CDSP.DeviceDesc = "Poco X3 Pro Hexagon(TM) 690 DSP"  
-PIL.DeviceDesc = "Poco X3 Pro System Manager Device"
-CDSP.FriendlyName = "Poco X3 Pro CDSP Subsystem"
+DiskId1 = "POCO X3 Pro Combined Subsystem Driver Installation Disk"
+CDSP.DeviceDesc = "POCO X3 Pro Hexagon(TM) 690 DSP"  
+PIL.DeviceDesc = "POCO X3 Pro System Manager Device"
+CDSP.FriendlyName = "POCO X3 Pro CDSP Subsystem"
 FASTRPC = 1
 TFTP = 2
 

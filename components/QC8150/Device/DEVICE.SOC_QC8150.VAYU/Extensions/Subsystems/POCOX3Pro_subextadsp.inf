@@ -410,9 +410,9 @@ hkr,mappings\fastrpc\53b6f29b6d1a00597f170891f725df9e8f3bb4a78c8ed4064122a25ce86
 [Strings]
 ;Localizable Strings
 Surface = "Xiaomi"
-DiskId1 = "Poco X3 Pro Combined Subsystem Driver Installation Disk"
-ADSP.DeviceDesc = "Poco X3 Pro Aqstic(TM)"         
-PIL.DeviceDesc = "Poco X3 Pro System Manager Device"
+DiskId1 = "POCO X3 Pro Combined Subsystem Driver Installation Disk"
+ADSP.DeviceDesc = "POCO X3 Pro Aqstic(TM)"         
+PIL.DeviceDesc = "POCO X3 Pro System Manager Device"
 FASTRPC = 1
 TFTP = 2
 
